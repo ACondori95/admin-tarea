@@ -1,9 +1,13 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import AuthLayout from "../../components/Layouts/AuthLayout";
 import {validateEmail} from "../../utils/helper";
 import ProfilePhotoSelector from "../../components/Inputs/ProfilePhotoSelector";
 import Input from "../../components/Inputs/Input";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
+import {API_PATHS} from "../../utils/apiPaths";
+import {UserContext} from "../../context/UserContext";
+import uploadImage from "../../utils/uploadImage";
 
 const Registrarse = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -14,9 +18,14 @@ const Registrarse = () => {
 
   const [error, setError] = useState(null);
 
+  const {updateUser} = useContext(UserContext);
+  const navigate = useNavigate();
+
   // Handle SignUp Form Submit
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    let profileImageUrl = "";
 
     if (!fullName) {
       setError("Por favor, ingresá el nombre completo.");
@@ -38,6 +47,40 @@ const Registrarse = () => {
     setError("");
 
     // SignUp API Call
+    try {
+      // Upload image if present
+      if (profilePic) {
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.data.url || "";
+      }
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        name: fullName,
+        email,
+        password,
+        profileImageUrl,
+        adminInviteToken,
+      });
+
+      const {token, role} = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(response.data);
+
+        // Redirect based on role
+        if (role === "admin") {
+          navigate("/admin/inicio");
+        } else {
+          navigate("/usuario/inicio");
+        }
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Algo salió mal. Por favor, intentá de nuevo.");
+      }
+    }
   };
 
   return (
