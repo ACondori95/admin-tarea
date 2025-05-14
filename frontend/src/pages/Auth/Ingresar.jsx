@@ -1,14 +1,18 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import AuthLayout from "../../components/Layouts/AuthLayout";
 import {Link, useNavigate} from "react-router-dom";
 import Input from "../../components/Inputs/Input";
 import {validateEmail} from "../../utils/helper";
+import axiosInstance from "../../utils/axiosInstance";
+import {API_PATHS} from "../../utils/apiPaths";
+import {UserContext} from "../../context/UserContext";
 
 const Ingresar = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const {updateUser} = useContext(UserContext);
   const navigate = useNavigate();
 
   // Handle Login Form Submit
@@ -30,6 +34,32 @@ const Ingresar = () => {
     setError("");
 
     // Login API Call
+    try {
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
+
+      const {token, role} = response.data;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(response.data);
+
+        // Redirect based on role
+        if (role === "admin") {
+          navigate("/admin/inicio");
+        } else {
+          navigate("/usuario/inicio");
+        }
+      }
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Algo salió mal. Por favor, intentá de nuevo.");
+      }
+    }
   };
 
   return (

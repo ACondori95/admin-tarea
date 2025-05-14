@@ -1,5 +1,11 @@
-import React from "react";
-import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
+import React, {useContext} from "react";
+import {
+  Navigate,
+  Outlet,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import Ingresar from "./pages/Auth/Ingresar";
 import Registrarse from "./pages/Auth/Registrarse";
 
@@ -13,36 +19,58 @@ import MisTareas from "./pages/Usuario/MisTareas";
 import VerDetallesTarea from "./pages/Usuario/VerDetallesTarea";
 
 import PrivateRoute from "./routes/PrivateRoute";
+import UserProvider, {UserContext} from "./context/UserContext";
 
 const App = () => {
   return (
-    <div>
-      <Router>
-        <Routes>
-          <Route path='/ingresar' element={<Ingresar />} />
-          <Route path='/registrarse' element={<Registrarse />} />
+    <UserProvider>
+      <div>
+        <Router>
+          <Routes>
+            <Route path='/ingresar' element={<Ingresar />} />
+            <Route path='/registrarse' element={<Registrarse />} />
 
-          {/* Admin Routes */}
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-            <Route path='/admin/inicio' element={<Inicio />} />
-            <Route path='/admin/tareas' element={<AdministrarTareas />} />
-            <Route path='/admin/crear-tareas' element={<CrearTarea />} />
-            <Route path='/admin/usuarios' element={<AdministrarUsuarios />} />
-          </Route>
+            {/* Admin Routes */}
+            <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+              <Route path='/admin/inicio' element={<Inicio />} />
+              <Route path='/admin/tareas' element={<AdministrarTareas />} />
+              <Route path='/admin/crear-tareas' element={<CrearTarea />} />
+              <Route path='/admin/usuarios' element={<AdministrarUsuarios />} />
+            </Route>
 
-          {/* User Routes */}
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-            <Route path='/usuario/inicio' element={<UsuarioInicio />} />
-            <Route path='/usuario/mis-tareas' element={<MisTareas />} />
-            <Route
-              path='/usuario/ver-detalles/:id'
-              element={<VerDetallesTarea />}
-            />
-          </Route>
-        </Routes>
-      </Router>
-    </div>
+            {/* User Routes */}
+            <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+              <Route path='/usuario/inicio' element={<UsuarioInicio />} />
+              <Route path='/usuario/mis-tareas' element={<MisTareas />} />
+              <Route
+                path='/usuario/ver-detalles/:id'
+                element={<VerDetallesTarea />}
+              />
+            </Route>
+
+            {/* Default Route */}
+            <Route path='/' element={<Root />} />
+          </Routes>
+        </Router>
+      </div>
+    </UserProvider>
   );
 };
 
 export default App;
+
+const Root = () => {
+  const {user, loading} = useContext(UserContext);
+
+  if (loading) return <Outlet />;
+
+  if (!user) {
+    return <Navigate to='/ingresar' />;
+  }
+
+  return user.role === "admin" ? (
+    <Navigate to='/admin/inicio' />
+  ) : (
+    <Navigate to='/usuario/inicio' />
+  );
+};
