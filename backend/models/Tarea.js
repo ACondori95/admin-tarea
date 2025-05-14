@@ -12,7 +12,7 @@ const TareaSchema = new mongoose.Schema(
     priority: {type: String, enum: ["Baja", "Media", "Alta"], default: "Media"},
     status: {
       type: String,
-      enum: ["Pendiente", "En Progreso", "Completeda"],
+      enum: ["Pendiente", "En Progreso", "Completada"],
       default: "Pendiente",
     },
     dueDate: {type: Date, required: true},
