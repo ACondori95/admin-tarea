@@ -5,6 +5,9 @@ import DashboardLayout from "../../components/Layouts/DashboardLayout";
 import {useNavigate} from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import {API_PATHS} from "../../utils/apiPaths";
+import InfoCard from "../../components/Cards/InfoCard";
+import {addThousandsSeparator} from "../../utils/helper";
+import {LuArrowRight} from "react-icons/lu";
 
 const Inicio = () => {
   useUserAuth();
@@ -36,9 +39,65 @@ const Inicio = () => {
     return () => {};
   }, []);
 
+  const now = new Date();
+  const weekdayFormatter = new Intl.DateTimeFormat("es-AR", {weekday: "long"});
+  let weekday = weekdayFormatter.format(now);
+  weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const day = now.getDate();
+  const monthFormatter = new Intl.DateTimeFormat("es-AR", {month: "long"});
+  let month = monthFormatter.format(now);
+  month = month.charAt(0).toUpperCase() + month.slice(1);
+  const year = now.getFullYear();
+  const fechaFinal = `${weekday} ${day} de ${month} de ${year}`;
+
+  console.log("### dashboard data ---> ", dashboardData);
+
   return (
     <DashboardLayout activeMenu='Inicio'>
-      {JSON.stringify(dashboardData)}
+      <div className='card my-5'>
+        <div>
+          <div className='col-span-3'>
+            <h2 className='text-xl md:text-2xl'>¡Buenos Días {user.name}!</h2>
+            <p className='text-xs md:text-[13px] text-gray-400 mt-1.5'>
+              {fechaFinal}
+            </p>
+          </div>
+        </div>
+
+        <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-5'>
+          <InfoCard
+            label='Tareas Totales'
+            value={addThousandsSeparator(
+              dashboardData?.charts?.taskDistribution?.Todo || 0
+            )}
+            color='bg-primary'
+          />
+
+          <InfoCard
+            label='Tareas Pendientes'
+            value={addThousandsSeparator(
+              dashboardData?.charts?.taskDistribution?.Pendiente || 0
+            )}
+            color='bg-violet-500'
+          />
+
+          <InfoCard
+            label='Tareas en Progreso'
+            value={addThousandsSeparator(
+              dashboardData?.charts?.taskDistribution?.EnProgreso || 0
+            )}
+            color='bg-cyan-500'
+          />
+
+          <InfoCard
+            label='Tareas Completadas'
+            value={addThousandsSeparator(
+              dashboardData?.charts?.taskDistribution?.Completada || 0
+            )}
+            color='bg-lime-500'
+          />
+        </div>
+      </div>
     </DashboardLayout>
   );
 };
