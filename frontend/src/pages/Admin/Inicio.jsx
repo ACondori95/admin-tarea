@@ -9,6 +9,9 @@ import InfoCard from "../../components/Cards/InfoCard";
 import {addThousandsSeparator} from "../../utils/helper";
 import {LuArrowRight} from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
+import CustomPieChart from "../../components/Charts/CustomPieChart";
+
+const COLORS = ["#8d51ff", "#00b8db", "#7bce00"];
 
 const Inicio = () => {
   useUserAuth();
@@ -21,6 +24,28 @@ const Inicio = () => {
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
 
+  // Prepare Chart Data
+  const prepareChartData = (data) => {
+    const taskDistribution = data?.taskDistribution || null;
+    const taskPriorityLevels = data?.taskPriorityLevels || null;
+
+    const taskDistributionData = [
+      {status: "Pendiente", count: taskDistribution?.Pendiente || 0},
+      {status: "En Progreso", count: taskDistribution?.EnProgreso || 0},
+      {status: "Completada", count: taskDistribution?.Completada || 0},
+    ];
+
+    setPieChartData(taskDistributionData);
+
+    const priorityLevelsData = [
+      {priority: "Baja", count: taskPriorityLevels?.Baja || 0},
+      {priority: "Media", count: taskPriorityLevels?.Media || 0},
+      {priority: "Alta", count: taskPriorityLevels?.Alta || 0},
+    ];
+
+    setBarChartData(priorityLevelsData);
+  };
+
   const getDashboardData = async () => {
     try {
       const response = await axiosInstance.get(
@@ -28,6 +53,7 @@ const Inicio = () => {
       );
       if (response.data) {
         setDashboardData(response.data);
+        prepareChartData(response.data?.charts || null);
       }
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
@@ -103,6 +129,16 @@ const Inicio = () => {
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6'>
+        <div>
+          <div className='card'>
+            <div className='flex items-center justify-between'>
+              <h5 className='font-medium'>Distribución de Tareas</h5>
+            </div>
+
+            <CustomPieChart data={pieChartData} colors={COLORS} />
+          </div>
+        </div>
+
         <div className='md:col-span-2'>
           <div className='card'>
             <div className='flex items-center justify-between'>
