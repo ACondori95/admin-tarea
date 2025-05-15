@@ -299,7 +299,7 @@ const getDashboardData = async (req, res) => {
     const recentTasks = await Tarea.find()
       .sort({createdAt: -1})
       .limit(10)
-      .select("title status priority dueDate createdAd");
+      .select("title status priority dueDate createdAt");
 
     res.status(200).json({
       statistics: {totalTasks, pendingTasks, completedTasks, overdueTasks},

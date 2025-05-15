@@ -8,6 +8,7 @@ import {API_PATHS} from "../../utils/apiPaths";
 import InfoCard from "../../components/Cards/InfoCard";
 import {addThousandsSeparator} from "../../utils/helper";
 import {LuArrowRight} from "react-icons/lu";
+import TaskListTable from "../../components/TaskListTable";
 
 const Inicio = () => {
   useUserAuth();
@@ -33,6 +34,10 @@ const Inicio = () => {
     }
   };
 
+  const onSeeMore = () => {
+    navigate("/admin/tareas");
+  };
+
   useEffect(() => {
     getDashboardData();
 
@@ -49,8 +54,6 @@ const Inicio = () => {
   month = month.charAt(0).toUpperCase() + month.slice(1);
   const year = now.getFullYear();
   const fechaFinal = `${weekday} ${day} de ${month} de ${year}`;
-
-  console.log("### dashboard data ---> ", dashboardData);
 
   return (
     <DashboardLayout activeMenu='Inicio'>
@@ -96,6 +99,22 @@ const Inicio = () => {
             )}
             color='bg-lime-500'
           />
+        </div>
+      </div>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6'>
+        <div className='md:col-span-2'>
+          <div className='card'>
+            <div className='flex items-center justify-between'>
+              <h5 className='text-lg'>Tareas Recientes</h5>
+
+              <button className='card-btn' onClick={onSeeMore}>
+                Ver Todo <LuArrowRight className='text-base' />
+              </button>
+            </div>
+
+            <TaskListTable tableData={dashboardData?.recentTasks || []} />
+          </div>
         </div>
       </div>
     </DashboardLayout>
