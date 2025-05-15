@@ -10,6 +10,7 @@ import {addThousandsSeparator} from "../../utils/helper";
 import {LuArrowRight} from "react-icons/lu";
 import TaskListTable from "../../components/TaskListTable";
 import CustomPieChart from "../../components/Charts/CustomPieChart";
+import CustomBarChart from "../../components/Charts/CustomBarChart";
 
 const COLORS = ["#8d51ff", "#00b8db", "#7bce00"];
 
@@ -136,6 +137,16 @@ const Inicio = () => {
             </div>
 
             <CustomPieChart data={pieChartData} colors={COLORS} />
+          </div>
+        </div>
+
+        <div>
+          <div className='card'>
+            <div className='flex items-center justify-between'>
+              <h5 className='font-medium'>Niveles de Prioridad de Tareas</h5>
+            </div>
+
+            <CustomBarChart data={barChartData} />
           </div>
         </div>
 
