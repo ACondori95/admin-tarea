@@ -17,7 +17,7 @@ const CrearTarea = () => {
     title: "",
     description: "",
     priority: "Baja",
-    dueDate: null,
+    dueDate: "",
     assignedTo: [],
     todoChecklist: [],
     attachments: [],
@@ -53,7 +53,40 @@ const CrearTarea = () => {
   // Update Task
   const updateTask = async () => {};
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    setError(null);
+
+    // Input Validation
+    if (!taskData.title.trim()) {
+      setError("El título es obligatorio.");
+      return;
+    }
+    if (!taskData.description.trim()) {
+      setError("La descripción es obligatoria.");
+      return;
+    }
+    if (!taskData.dueDate.trim()) {
+      setError("La fecha límite es obligatoria.");
+      return;
+    }
+
+    if (taskData.assignedTo?.length === 0) {
+      setError("Tarea no asignada a ningún miembro");
+      return;
+    }
+
+    if (taskData.todoChecklist?.length === 0) {
+      setError("Agregá al menos una tarea pendiente.");
+      return;
+    }
+
+    if (taskId) {
+      updateTask();
+      return;
+    }
+
+    createTask();
+  };
 
   // get Task info by ID
   const getTaskDetailsByID = async () => {};
