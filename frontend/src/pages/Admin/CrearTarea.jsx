@@ -7,6 +7,9 @@ import SelectDropdown from "../../components/Inputs/SelectDropdown";
 import SelectUsers from "../../components/Inputs/SelectUsers";
 import TodoListInput from "../../components/Inputs/TodoListInput";
 import AddAttachmentsInput from "../../components/Inputs/AddAttachmentsInput";
+import axiosInstance from "../../utils/axiosInstance";
+import {API_PATHS} from "../../utils/apiPaths";
+import toast from "react-hot-toast";
 
 const CrearTarea = () => {
   const location = useLocation();
@@ -48,7 +51,31 @@ const CrearTarea = () => {
   };
 
   // Create Task
-  const createTask = async () => {};
+  const createTask = async () => {
+    setLoading(true);
+
+    try {
+      const todoList = taskData.todoChecklist?.map((item) => ({
+        text: item,
+        completed: false,
+      }));
+
+      const response = await axiosInstance.post(API_PATHS.TASKS.CREATE_TASK, {
+        ...taskData,
+        dueDate: new Date(taskData.dueDate).toISOString(),
+        todoChecklist: todoList,
+      });
+
+      toast.success("Tarea Creada con Éxito");
+
+      clearData();
+    } catch (error) {
+      console.error("Error al crear la tarea:", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Update Task
   const updateTask = async () => {};

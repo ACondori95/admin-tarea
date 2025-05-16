@@ -20,6 +20,7 @@ import VerDetallesTarea from "./pages/Usuario/VerDetallesTarea";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import UserProvider, {UserContext} from "./context/UserContext";
+import {Toaster} from "react-hot-toast";
 
 const App = () => {
   return (
@@ -53,6 +54,8 @@ const App = () => {
           </Routes>
         </Router>
       </div>
+
+      <Toaster toastOptions={{className: "", style: {fontSize: "13px"}}} />
     </UserProvider>
   );
 };
