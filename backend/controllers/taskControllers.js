@@ -55,7 +55,7 @@ const getTasks = async (req, res) => {
 
     const completedTasks = await Tarea.countDocuments({
       ...filter,
-      status: "Completeda",
+      status: "Completada",
       ...(req.user.role !== "admin" && {assignedTo: req.user._id}),
     });
 
