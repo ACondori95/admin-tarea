@@ -3,6 +3,7 @@ import DashboardLayout from "../../components/Layouts/DashboardLayout";
 import axiosInstance from "../../utils/axiosInstance";
 import {API_PATHS} from "../../utils/apiPaths";
 import {LuFileSpreadsheet} from "react-icons/lu";
+import UserCard from "../../components/Cards/UserCard";
 
 const AdministrarUsuarios = () => {
   const [allUsers, setAllUsers] = useState([]);
@@ -42,7 +43,11 @@ const AdministrarUsuarios = () => {
           </button>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mt-4'></div>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mt-4'>
+          {allUsers?.map((user) => (
+            <UserCard key={user._id} userInfo={user} />
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );
