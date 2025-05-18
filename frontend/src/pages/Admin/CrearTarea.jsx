@@ -12,6 +12,8 @@ import {API_PATHS} from "../../utils/apiPaths";
 import toast from "react-hot-toast";
 import moment from "moment";
 import "moment/locale/es";
+import Modal from "../../components/Modal";
+import DeleteAlert from "../../components/DeleteAlert";
 
 moment.locale("es");
 
@@ -179,7 +181,20 @@ const CrearTarea = () => {
   };
 
   // Delete Task
-  const deleteTask = async () => {};
+  const deleteTask = async () => {
+    try {
+      await axiosInstance.delete(API_PATHS.TASKS.DELETE_TASK(taskId));
+
+      setOpenDeleteAlert(false);
+      toast.success("Detalles de la tarea eliminados con éxito");
+      navigate("/admin/tareas");
+    } catch (error) {
+      console.error(
+        "Error al eliminar la tarea:",
+        error.response?.data?.message || error.message
+      );
+    }
+  };
 
   useEffect(() => {
     if (taskId) {
@@ -324,6 +339,16 @@ const CrearTarea = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={openDeleteAlert}
+        onClose={() => setOpenDeleteAlert(false)}
+        title='Eliminar Tarea'>
+        <DeleteAlert
+          content='¿Estás seguro de que querés eliminar esta tarea?'
+          onDelete={() => deleteTask()}
+        />
+      </Modal>
     </DashboardLayout>
   );
 };
