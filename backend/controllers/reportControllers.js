@@ -33,7 +33,7 @@ const exportTasksReport = async (req, res) => {
         priority: task.priority,
         status: task.status,
         dueDate: task.dueDate,
-        assignedTo: task.assignedTo,
+        assignedTo: assignedTo,
       });
     });
 

@@ -6,6 +6,7 @@ import {API_PATHS} from "../../utils/apiPaths";
 import {LuFileSpreadsheet} from "react-icons/lu";
 import TaskStatusTabs from "../../components/TaskStatusTabs";
 import TaskCard from "../../components/Cards/TaskCard";
+import toast from "react-hot-toast";
 
 const AdministrarTareas = () => {
   const [allTasks, setAllTasks] = useState([]);
@@ -44,7 +45,28 @@ const AdministrarTareas = () => {
   };
 
   // download task report
-  const handleDownloadReport = async () => {};
+  const handleDownloadReport = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.REPORTS.EXPORT_TASKS, {
+        responseType: "blob",
+      });
+
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "detalles_tareas.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error al descargar los detalles del gasto:", error);
+      toast.error(
+        "No se pudieron descargar los detalles del gasto. Por favor, intentá de nuevo."
+      );
+    }
+  };
 
   useEffect(() => {
     getAllTasks(filterStatus);
