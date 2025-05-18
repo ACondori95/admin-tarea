@@ -72,7 +72,7 @@ const TaskCard = ({
         </p>
 
         <p className='text-[13px] text-gray-700/80 font-medium mt-2 mb-2 leading-[18px]'>
-          Tarea Completada:{" "}
+          Tareas Completadas:{" "}
           <span className='font-semibold text-gray-700'>
             {completedTodoCount} / {todoChecklist.length || 0}
           </span>
