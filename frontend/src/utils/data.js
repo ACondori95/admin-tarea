@@ -20,7 +20,12 @@ export const SIDE_MENU_DATA = [
     icon: LuSquarePlus,
     path: "/admin/crear-tareas",
   },
-  {id: "04", label: "Miembros del Equipo", icon: LuUsers, path: "/admin/users"},
+  {
+    id: "04",
+    label: "Miembros del Equipo",
+    icon: LuUsers,
+    path: "/admin/usuarios",
+  },
   {id: "05", label: "Salir", icon: LuLogOut, path: "salir"},
 ];
 
